@@ -1,0 +1,16 @@
+#!/bin/bash
+
+percentageBrightness=$1
+
+from=2 # it really goes from 0, but that's a black screen :P
+to=852
+brightnessFile=/sys/class/backlight/intel_backlight/brightness
+
+transform() {
+    local percentage="$1"
+
+    # brighness goes from, to
+    expr \( $percentage \* 1000 \* \( 852 - 2 \) + 2 \) / 1000 / 100
+}
+
+echo $(transform $percentageBrightness) | sudo tee $brightnessFile
