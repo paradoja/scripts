@@ -1,16 +1,33 @@
 #!/bin/bash
 
-percentageBrightness=$1
-
-from=2 # it really goes from 0, but that's a black screen :P
+from=2
 to=852
 brightnessFile=/sys/class/backlight/intel_backlight/brightness
 
-transform() {
+toPercentage() {
+    local brighnessLevel="$1"
+
+    echo "scale=4; ($brighnessLevel - $from) / ( $to - $from ) * 100" | bc
+}
+
+toBrightnessLevel() {
     local percentage="$1"
 
     # brighness goes from, to
-    expr \( $percentage \* 1000 \* \( 852 - 2 \) + 2 \) / 1000 / 100
+    echo "scale=4; res = $percentage / 100.0 * ( $to - $from ) + $from; scale=0; res/1" | bc
 }
 
-echo $(transform $percentageBrightness) | sudo tee $brightnessFile
+readBrightness() {
+    toPercentage "$(cat $brightnessFile)"
+}
+
+updateBrighness() {
+    toBrightnessLevel "$1" | sudo tee $brightnessFile
+}
+
+if [ $# -eq 0 ]
+then
+    readBrightness
+else
+    updateBrighness "$1"
+fi
