@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+function waitForKeyPress {
+    while read -r event; do
+        if [[ $event == *"KeyPress"* ]]; then
+            killall xclock 2>/dev/null
+            exit 0
+        fi
+    done < <(xinput --test-xi2 --root)
+}
+
+waitForKeyPress &
+xclock -digital -xrm '*overrideRedirect: True' -geometry 5000x5000+0+0 -update 1 -face Sans-48 -padding 700
