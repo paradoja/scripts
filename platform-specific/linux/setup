@@ -34,7 +34,7 @@ function startXmonad {
     done
     emacs &
     gnome-terminal -- /bin/sh -c "ssh-add; zsh -c \"tmux; zsh -i\""
-    feh --bg-scale --randomize /usr/share/backgrounds/
+    feh --bg-scale --randomize --recursive /usr/share/backgrounds/
 }
 
 setxkbmap -option ctrl:swapcaps
