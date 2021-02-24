@@ -1,6 +1,10 @@
 #!/bin/sh
 
-t=$(mktemp emacs-pager-tmp.XXXXXXX) || exit 1
-cat - >> "$t"
-emacsclient -nw "$t"
-rm -f -- $t
+if [[ $# -eq 0 ]]; then
+	t=$(mktemp emacs-pager-tmp.XXXXXXX) || exit 1
+	cat - >>"$t"
+	emacsclient -nw "$t"
+	rm -f -- $t
+else
+	emacsclient -nw "$@"
+fi
